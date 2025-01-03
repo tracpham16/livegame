@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <style type="text/css">
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0px;
+
+        }
+
+        video {
+            background-color: transparent;
+        }
+
+        #h5live-playerDiv,
+        #playerDiv {
+            background-color: transparent !important;
+        }
+
+        body {
+            background-image: url('./bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        #h5live-playerDiv {
+            transform: translate(-50%, -50%) scaleX(1.05) scaleY(1) rotate(0deg) !important;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="playerDiv" style="width:100%; padding-top:56.25%"></div>
+    <script src="https://demo.nanocosmos.de/nanoplayer/api/release/nanoplayer.4.min.js"></script>
+    <script>
+        var player;
+        var events = {};
+
+        events.onReady = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onPlay = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            document.getElementById('playerDiv').style.display = 'block';
+
+        };
+        events.onPause = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            document.getElementById('playerDiv').style.display = 'none';
+        };
+        events.onLoading = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onStartBuffering = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onStopBuffering = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onError = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onWarning = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onMetaData = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        // Beware that this event is fired frequently (each 100msec with infomration source) and can clutter the console quickly.
+        events.onStats = function (event) {
+            // console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onMute = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onUnmute = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onVolumeChange = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onStreamInfo = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onStreamInfoUpdate = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onDestroy = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onUpdateSourceInit = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onUpdateSourceSuccess = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onUpdateSourceFail = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onUpdateSourceAbort = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onSwitchStreamInit = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onSwitchStreamSuccess = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onSwitchStreamFail = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onSwitchStreamAbort = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        events.onFullscreenChange = function (event) {
+            console.log(event.name + ': ' + JSON.stringify(event.data, undefined, 4));
+            // IF NEEDED DO THINGS HERE
+            // ...
+        };
+        var config = {
+            "source": {
+                // "default": {
+                //     "service": "bintu",
+                // },
+                // "entries": [
+                //     {
+                //         "index": 0,
+                //         "h5live": {
+                //             "rtmp": {
+                //                 "streamname": "jcVtX-P4NXX",
+                //             }
+                //         }
+                //     }
+                // ],
+                "group": {
+                    "id": "94ba8708-4c0e-485b-977a-6c4cab2f9b44",
+                    "apiurl": "https://bintu.nanocosmos.de"
+                },
+                "options": {
+                    "adaption": {
+                        "rule": "deviationOfMean2"
+                    }
+                },
+                "startIndex": 0
+            },
+            "playback": {
+                "latencyControlMode": "classic",
+                "autoplay": true,
+                "automute": true,
+                "faststart": true
+            },
+            "style": {
+                "width": "auto",
+                "height": "auto"
+            },
+            'events': events
+        };
+        document.addEventListener('DOMContentLoaded', function () {
+            player = new NanoPlayer("playerDiv");
+            player.setup(config).then(function (config) {
+                console.log("setup success");
+                console.log("config: " + JSON.stringify(config, undefined, 4));
+            }, function (error) {
+                alert(error.message);
+            });
+        });
+    </script>
+
+    <!-- <script>
+
+        var player;
+        var middleViewEl;
+        var defaultUrl = "rtmp://bintu-splay.nanocosmos.de/splay";
+        var defaultServer = {
+            "websocket": "wss://bintu-h5live-secure.nanocosmos.de/h5live/authstream",
+            "hls": "https://bintu-h5live-secure.nanocosmos.de/h5live/authhttp/playlist.m3u8"
+        };
+        var isPlaying = false;
+        var isMute = true;
+        var ip = "";
+        var showIP = true;
+        var countRetry = 0;
+        var maxRetry = 3;
+        var authLiveUrl = "https://api-csn-s.gameland.today/api/v1/live-new/";
+
+        var params = new URL(window.location.href).searchParams;
+        // console.log("params: " + params);
+
+        var token = params.get("token");
+        var enableSound = params.get("enableSound");
+        var authLive = params.get("authLive");
+
+        var isEnableEffectTip = 0;
+        var urlWsTip = "";
+        var cmdChatTip = 0;
+        var siteKey = "";
+        var urlRunning = "";
+        var zoneName = "MiniGame2";
+
+        try {
+            isEnableEffectTip = Number(params.get("effectTip"));
+            urlWsTip = params.get("urlWsTip");
+            cmdChatTip = Number(params.get("cmdChatTip"));
+            urlRunning = params.get("run");
+
+            if (isEnableEffectTip == NaN || isEnableEffectTip == null || isEnableEffectTip == undefined) {
+                isEnableEffectTip = 0;
+            }
+            if (urlWsTip == null || urlWsTip == undefined) {
+                urlWsTip = "";
+            }
+            if (cmdChatTip == NaN || cmdChatTip == null || cmdChatTip == undefined) {
+                cmdChatTip = 0;
+            }
+            if (urlRunning == null || urlRunning == undefined) {
+                urlRunning = "";
+            }
+        } catch (error) { }
+
+        try {
+            siteKey = params.get("siteKey");
+            if (siteKey == null || siteKey == undefined) {
+                siteKey = "";
+            }
+        } catch (error) { }
+
+        var config = {
+            "source": {
+                "entries": [
+                    {
+                        "h5live": {
+                            "server": defaultServer,
+                            "rtmp": {
+                                "url": defaultUrl,
+                                "streamname": ""
+                            },
+                            "security": {
+                                "jwtoken": ""
+                            }
+                        }
+                    }
+                ]
+            },
+            "playback": {
+                "autoplay": true,
+                "automute": true,
+                "muted": true,
+                "faststart": true
+            },
+            "style": {
+                "displayMutedAutoplay": false,
+                "controls": false,
+                "fullScreenControl": false,
+                "interactive": true
+            },
+            "events": {
+                "onSwitchStreamSuccess": function (e) {
+                    console.log('1');
+                },
+                "onReady": function (e) {
+                    //console.log(e);
+
+                    middleViewEl = document.getElementById('middleView-playerDiv');
+                    middleViewEl.ontouchmove = function (event) {
+                        event.preventDefault();
+                        console.log('vaooo');
+
+                    }
+
+                    // setSizePlayer();
+                },
+                "onPlay": function (e) {
+                    console.log(e);
+
+                    // middleViewEl.style.left = "5%";
+                    // middleViewEl.style.top = "91%";
+                    // middleViewEl.style.width = "7vw";
+                    // middleViewEl.style.height = "7vw";
+
+                    // if (isMute) {
+                    //     setSoundOffEl();
+                    //     if (enableSound == null || enableSound == undefined || enableSound == "true") {
+                    //         soundOffEl.click();
+                    //     }
+                    // } else {
+                    //     setSoundOnEl();
+                    // }
+
+                    // isPlaying = true;
+                    // setSizePlayer();
+                },
+                "onLoading": function (e) {
+                    //console.log(e);
+                },
+                "onStartBuffering": function (e) {
+                    //console.log(e);
+                },
+                "onStopBuffering": function (e) {
+                    //console.log(e);
+
+                    // middleViewEl.style.width = "7vw";
+                    // middleViewEl.style.height = "7vw";
+                },
+
+            }
+        };
+
+        function verifyToken() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    let result = JSON.parse(this.response);
+                    console.log(this.response, result);
+
+                    let data = result.data;
+                    let streamId = result.streamId;
+
+                    if (data != null && data != undefined) {
+                        let jwtoken = data.token;
+                        if (jwtoken != null && jwtoken != undefined) {
+                            config.source.entries[0].h5live.security.jwtoken = jwtoken;
+                        }
+                    }
+
+                    if (streamId != null && streamId != undefined) {
+                        config.source.entries[0].h5live.rtmp.streamname = streamId;
+                    }
+
+                    player = new NanoPlayer("playerDiv");
+                    player.setup(config).then(function (config) {
+                        console.log("setup success");
+                        console.log("config: " + JSON.stringify(config, undefined, 4));
+
+                        // var controlsEl = document.getElementById('controls-playerDiv');
+                        // controlsEl.ontouchmove = function (event) {
+                        //     event.preventDefault();
+                        // }
+
+                    }, function (error) {
+                        console.log(error.message);
+                    })
+
+                    ip = result.ip;
+                    if (ip != null && ip != undefined && showIP) {
+                        document.getElementById('myip').innerHTML = ip;
+                    }
+                }
+            };
+            // xhttp.onerror = function () {
+            //     setTimeout(function () {
+            //         retryVerifyToken();
+            //     }, 500);
+            // };
+            // xhttp.ontimeout = function () {
+            //     setTimeout(function () {
+            //         retryVerifyToken();
+            //     }, 500);
+            // };
+            // console.log("verifyToken", "token: " + token);
+            xhttp.open("POST", authLiveUrl, true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(JSON.stringify({ "site": siteKey, "token": token, "gameCode": "tx" }));
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (authLive != null && authLive != undefined) {
+                authLiveUrl = authLive;
+            }
+            verifyToken();
+
+        });
+
+        var playerEl = document.getElementById("playerDiv");
+
+        // var videoEl = document.getElementById('h5live-playerDiv');
+        // videoEl.ontouchmove = function (event) {
+        //     event.preventDefault();
+        // }
+
+        // var blocktouchEl = document.getElementById('blocktouch-playerDiv');
+        // blocktouchEl.ontouchmove = function (event) {
+        //     event.preventDefault();
+        // }
+
+        // blocktouchEl.ontouchstart = function (event) {
+        //     event.preventDefault();
+        // }
+
+        // var soundOffEl = document.getElementById("soundoff");
+        // soundOffEl.ontouchmove = function (event) {
+        //     event.preventDefault();
+        // }
+
+        // var soundOnEl = document.getElementById("soundon");
+        // soundOnEl.ontouchmove = function (event) {
+        //     event.preventDefault();
+        // }
+
+        // function soundOn() {
+        //     player.unmute();
+        // }
+
+        // function soundOff() {
+        //     player.mute();
+        // }
+
+        // function setSoundOnEl() {
+        //     soundOffEl.style.display = "none";
+        //     soundOnEl.style.display = "block";
+        // }
+
+        // function setSoundOffEl() {
+        //     soundOffEl.style.display = "block";
+        //     soundOnEl.style.display = "none";
+        // }
+
+        // function hideSoundEl() {
+        //     soundOffEl.style.display = "none";
+        //     soundOnEl.style.display = "none";
+        // }
+
+        // function retryVerifyToken() {
+        //     countRetry++;
+        //     if (countRetry <= maxRetry) {
+        //         verifyToken();
+        //     }
+        // }
+
+        // function setSizePlayer() {
+        //     playerEl.style.width = "100%";
+        //     playerEl.style.height = "100%";
+        // }
+
+
+
+
+
+    </script> -->
+</body>
+
+</html>
