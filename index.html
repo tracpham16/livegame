@@ -2,7 +2,7 @@
 <html lang="vi" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-
+    <title>Xoc Dia Moc Bai</title>
     <style type="text/css">
         * {
             box-sizing: border-box;
@@ -80,7 +80,7 @@
 
 
         #controls-playerDiv {
-            display: none;
+            /* display: none; */
         }
     </style>
 
@@ -99,7 +99,6 @@
         var events = {};
         var isPlaying = false;
         var isMute = true;
-        var middleViewEl
 
 
         var config = {
@@ -112,7 +111,7 @@
                         "index": 0,
                         "h5live": {
                             "rtmp": {
-                                "streamname": "jwMh5-DoFV3"
+                                "streamname": "TTS0P-FIC43"
                             }
                         }
                     }
@@ -126,25 +125,29 @@
             },
             "style": {
                 "width": "auto",
-                "height": "auto"
+                "height": "auto",
+                "displayMutedAutoplay": false,
+                "controls": false,
+                "fullScreenControl": false,
+                "interactive": true
             },
             "events": {
                 "onSwitchStreamSuccess": function (e) {
                     //console.log(e);
+
                 },
 
                 "onReady": function (e) {
+
                     //console.log(e);
-                    middleViewEl = document.getElementById('middleView-playerDiv');
-                    middleViewEl.style.display = "none";
-                    // middleViewEl.ontouchmove = function (event) {
-                    //     event.preventDefault();
-                    // }
+
                     setSizePlayer();
                 },
 
                 "onPlay": function (e) {
+
                     //console.log(e);
+
                     if (isMute) {
                         setSoundOffEl();
                         // if (enableSound == null || enableSound == undefined || enableSound == "true") {
@@ -159,23 +162,23 @@
                 },
 
                 "onLoading": function (e) {
+
                     //console.log(e);
                 },
 
                 "onStartBuffering": function (e) {
+
                     //console.log(e);
                 },
 
                 "onStopBuffering": function (e) {
+
                     //console.log(e);
 
-                    // middleViewEl.style.width = "7vw";
-                    // middleViewEl.style.height = "7vw";
                 },
 
                 "onMute": function (e) {
                     //console.log(e);
-                    console.log('vao day 1', isPlaying);
 
                     if (isPlaying) {
                         setSoundOffEl();
@@ -186,7 +189,6 @@
 
                 "onUnmute": function (e) {
                     //console.log(e);
-                    console.log('vao day 2', isPlaying);
 
                     if (isPlaying) {
                         setSoundOnEl();
@@ -196,9 +198,7 @@
                 },
 
                 "onPause": function (e) {
-                    //console.log(e);
-
-                   // hideSoundEl();
+                    hideSoundEl();
                     if (e.data != null && e.data != undefined && e.data.reason != null && e.data.reason != undefined && e.data.reason !== "playbacksuspended" && e.data.reason !== "interactionrequired") {
                         window.location.reload();
                     }
@@ -213,8 +213,7 @@
                 console.log("setup success");
                 console.log("config: " + JSON.stringify(config, undefined, 4));
                 var controlsEl = document.getElementById('controls-playerDiv');
-                controlsEl.remove()
-
+                // controlsEl.remove()
 
             }, function (error) {
                 alert(error.message);
