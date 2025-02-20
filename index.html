@@ -4,56 +4,102 @@
 <head>
 
     <style type="text/css">
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            top: 0;
+        }
+
+
         html,
-        body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            margin: 0px;
-
-        }
-
-        video {
-            background-color: transparent;
-        }
-
-        #h5live-playerDiv,
-        #playerDiv {
-            background-color: transparent !important;
-        }
-
         body {
             background-image: url('./bg.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+            background-color: black;
         }
 
-/*         #h5live-playerDiv {
-            transform: translate(-50%, -50%) scaleX(1.05) scaleY(1) rotate(0deg) !important;
+
+
+        /* img {
+            position: absolute;
+            right: 2vw;
+            top: 2vh;
+            z-index: 1;
+            width: 18vw;
+            height: auto;
         } */
+
+        #soundon {
+            position: absolute;
+            right: 87vw;
+            top: 81vh;
+            z-index: 4;
+            width: 12vw;
+            height: auto;
+            background-color: transparent;
+            border: none;
+            display: none;
+        }
+
+        #soundoff {
+            position: absolute;
+            right: 87vw;
+            top: 81vh;
+            z-index: 4;
+            width: 12vw;
+            height: auto;
+            background-color: transparent;
+            border: none;
+            display: none;
+        }
+
+        /* .animate-character {
+            text-transform: uppercase;
+            color: #ffffff;
+            z-index: 5;
+            text-align: right;
+            width: 100%;
+            position: absolute;
+            font-size: 2vw;
+            top: 98vh;
+            left: 49.5vw;
+            transform: translate(-50%, -50%);
+        } */
+
+
+        #controls-playerDiv {
+            display: none;
+        }
     </style>
 
 </head>
 
 <body>
 
-    <div id="playerDiv" style="width:100%; padding-top:56.25%"></div>
+    <div id="playerDiv"
+        style="overflow: hidden; position: relative; background-color: black;  width: 100%; height: 100%;"></div>
+    <img draggable="false" src="res/sound-off.png" id="soundoff" onclick="soundOn()" style="display: none;">
+    <img draggable="false" src="res/sound-on.png" id="soundon" onclick="soundOff()" style="display: block;">
     <script src="https://demo.nanocosmos.de/nanoplayer/api/release/nanoplayer.4.min.js"></script>
     <script>
+
         var player;
         var events = {};
-
-
-        events.onPlay = function (event) {
-            console.log('onPlay : ' + JSON.stringify(event.data, undefined, 4));
-            document.getElementById('playerDiv').style.display = 'block';
-
-        };
-        events.onPause = function (event) {
-            console.log('onPause : ' + JSON.stringify(event.data, undefined, 4));
-            document.getElementById('playerDiv').style.display = 'none';
-        };
+        var isPlaying = false;
+        var isMute = true;
+        var middleViewEl
 
 
         var config = {
@@ -78,173 +124,48 @@
                 "muted": false,
                 "faststart": true
             },
-            "events": events
-        }
-        // var config = {
-
-        //     "source": {
-        //         "group": {
-        //             "id": "95720532-5733-4042-a0e9-669c603cb3bf",
-        //             "apiurl": "https://bintu.nanocosmos.de"
-        //         },
-        //         "options": {
-        //             "adaption": {
-        //                 "rule": "deviationOfMean2"
-        //             }
-        //         },
-        //         "startIndex": 0
-        //     },
-        //     "playback": {
-        //         "autoplay": true,
-        //         "automute": true,
-        //         "faststart": true
-        //     },
-        //     "style": {
-        //         "width": "auto",
-        //         "height": "auto"
-        //     },
-        //     'events': events
-        // };
-        document.addEventListener('DOMContentLoaded', function () {
-            player = new NanoPlayer("playerDiv");
-            player.setup(config).then(function (config) {
-                console.log("setup success");
-                console.log("config: " + JSON.stringify(config, undefined, 4));
-            }, function (error) {
-                alert(error.message);
-            });
-        });
-    </script>
-
-    <!-- <script>
-
-        var player;
-        var middleViewEl;
-        var defaultUrl = "rtmp://bintu-splay.nanocosmos.de/splay";
-        var defaultServer = {
-            "websocket": "wss://bintu-h5live-secure.nanocosmos.de/h5live/authstream",
-            "hls": "https://bintu-h5live-secure.nanocosmos.de/h5live/authhttp/playlist.m3u8"
-        };
-        var isPlaying = false;
-        var isMute = true;
-        var ip = "";
-        var showIP = true;
-        var countRetry = 0;
-        var maxRetry = 3;
-        var authLiveUrl = "https://api-csn-s.gameland.today/api/v1/live-new/";
-
-        var params = new URL(window.location.href).searchParams;
-        // console.log("params: " + params);
-
-        var token = params.get("token");
-        var enableSound = params.get("enableSound");
-        var authLive = params.get("authLive");
-
-        var isEnableEffectTip = 0;
-        var urlWsTip = "";
-        var cmdChatTip = 0;
-        var siteKey = "";
-        var urlRunning = "";
-        var zoneName = "MiniGame2";
-
-        try {
-            isEnableEffectTip = Number(params.get("effectTip"));
-            urlWsTip = params.get("urlWsTip");
-            cmdChatTip = Number(params.get("cmdChatTip"));
-            urlRunning = params.get("run");
-
-            if (isEnableEffectTip == NaN || isEnableEffectTip == null || isEnableEffectTip == undefined) {
-                isEnableEffectTip = 0;
-            }
-            if (urlWsTip == null || urlWsTip == undefined) {
-                urlWsTip = "";
-            }
-            if (cmdChatTip == NaN || cmdChatTip == null || cmdChatTip == undefined) {
-                cmdChatTip = 0;
-            }
-            if (urlRunning == null || urlRunning == undefined) {
-                urlRunning = "";
-            }
-        } catch (error) { }
-
-        try {
-            siteKey = params.get("siteKey");
-            if (siteKey == null || siteKey == undefined) {
-                siteKey = "";
-            }
-        } catch (error) { }
-
-        var config = {
-            "source": {
-                "entries": [
-                    {
-                        "h5live": {
-                            "server": defaultServer,
-                            "rtmp": {
-                                "url": defaultUrl,
-                                "streamname": ""
-                            },
-                            "security": {
-                                "jwtoken": ""
-                            }
-                        }
-                    }
-                ]
-            },
-            "playback": {
-                "autoplay": true,
-                "automute": true,
-                "muted": true,
-                "faststart": true
-            },
             "style": {
-                "displayMutedAutoplay": false,
-                "controls": false,
-                "fullScreenControl": false,
-                "interactive": true
+                "width": "auto",
+                "height": "auto"
             },
             "events": {
                 "onSwitchStreamSuccess": function (e) {
-                    console.log('1');
+                    //console.log(e);
                 },
+
                 "onReady": function (e) {
                     //console.log(e);
-
                     middleViewEl = document.getElementById('middleView-playerDiv');
-                    middleViewEl.ontouchmove = function (event) {
-                        event.preventDefault();
-                        console.log('vaooo');
+                    middleViewEl.style.display = "none";
+                    // middleViewEl.ontouchmove = function (event) {
+                    //     event.preventDefault();
+                    // }
+                    setSizePlayer();
+                },
 
+                "onPlay": function (e) {
+                    //console.log(e);
+                    if (isMute) {
+                        setSoundOffEl();
+                        // if (enableSound == null || enableSound == undefined || enableSound == "true") {
+                        //     soundOffEl.click();
+                        // }
+                    } else {
+                        setSoundOnEl();
                     }
 
-                    // setSizePlayer();
+                    isPlaying = true;
+                    setSizePlayer();
                 },
-                "onPlay": function (e) {
-                    console.log(e);
 
-                    // middleViewEl.style.left = "5%";
-                    // middleViewEl.style.top = "91%";
-                    // middleViewEl.style.width = "7vw";
-                    // middleViewEl.style.height = "7vw";
-
-                    // if (isMute) {
-                    //     setSoundOffEl();
-                    //     if (enableSound == null || enableSound == undefined || enableSound == "true") {
-                    //         soundOffEl.click();
-                    //     }
-                    // } else {
-                    //     setSoundOnEl();
-                    // }
-
-                    // isPlaying = true;
-                    // setSizePlayer();
-                },
                 "onLoading": function (e) {
                     //console.log(e);
                 },
+
                 "onStartBuffering": function (e) {
                     //console.log(e);
                 },
+
                 "onStopBuffering": function (e) {
                     //console.log(e);
 
@@ -252,80 +173,54 @@
                     // middleViewEl.style.height = "7vw";
                 },
 
-            }
-        };
+                "onMute": function (e) {
+                    //console.log(e);
+                    console.log('vao day 1', isPlaying);
 
-        function verifyToken() {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    let result = JSON.parse(this.response);
-                    console.log(this.response, result);
-
-                    let data = result.data;
-                    let streamId = result.streamId;
-
-                    if (data != null && data != undefined) {
-                        let jwtoken = data.token;
-                        if (jwtoken != null && jwtoken != undefined) {
-                            config.source.entries[0].h5live.security.jwtoken = jwtoken;
-                        }
+                    if (isPlaying) {
+                        setSoundOffEl();
                     }
 
-                    if (streamId != null && streamId != undefined) {
-                        config.source.entries[0].h5live.rtmp.streamname = streamId;
+                    isMute = true;
+                },
+
+                "onUnmute": function (e) {
+                    //console.log(e);
+                    console.log('vao day 2', isPlaying);
+
+                    if (isPlaying) {
+                        setSoundOnEl();
                     }
 
-                    player = new NanoPlayer("playerDiv");
-                    player.setup(config).then(function (config) {
-                        console.log("setup success");
-                        console.log("config: " + JSON.stringify(config, undefined, 4));
+                    isMute = false;
+                },
 
-                        // var controlsEl = document.getElementById('controls-playerDiv');
-                        // controlsEl.ontouchmove = function (event) {
-                        //     event.preventDefault();
-                        // }
+                "onPause": function (e) {
+                    //console.log(e);
 
-                    }, function (error) {
-                        console.log(error.message);
-                    })
-
-                    ip = result.ip;
-                    if (ip != null && ip != undefined && showIP) {
-                        document.getElementById('myip').innerHTML = ip;
+                    hideSoundEl();
+                    if (e.data != null && e.data != undefined && e.data.reason != null && e.data.reason != undefined && e.data.reason !== "playbacksuspended" && e.data.reason !== "interactionrequired") {
+                        window.location.reload();
                     }
+                    isPlaying = false;
                 }
-            };
-            // xhttp.onerror = function () {
-            //     setTimeout(function () {
-            //         retryVerifyToken();
-            //     }, 500);
-            // };
-            // xhttp.ontimeout = function () {
-            //     setTimeout(function () {
-            //         retryVerifyToken();
-            //     }, 500);
-            // };
-            // console.log("verifyToken", "token: " + token);
-            xhttp.open("POST", authLiveUrl, true);
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(JSON.stringify({ "site": siteKey, "token": token, "gameCode": "tx" }));
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            if (authLive != null && authLive != undefined) {
-                authLiveUrl = authLive;
-            }
-            verifyToken();
+            player = new NanoPlayer("playerDiv");
+            player.setup(config).then(function (config) {
+                console.log("setup success");
+                console.log("config: " + JSON.stringify(config, undefined, 4));
+                var controlsEl = document.getElementById('controls-playerDiv');
+                controlsEl.remove()
 
+
+            }, function (error) {
+                alert(error.message);
+            });
         });
 
-        var playerEl = document.getElementById("playerDiv");
-
-        // var videoEl = document.getElementById('h5live-playerDiv');
-        // videoEl.ontouchmove = function (event) {
-        //     event.preventDefault();
-        // }
 
         // var blocktouchEl = document.getElementById('blocktouch-playerDiv');
         // blocktouchEl.ontouchmove = function (event) {
@@ -336,56 +231,59 @@
         //     event.preventDefault();
         // }
 
-        // var soundOffEl = document.getElementById("soundoff");
-        // soundOffEl.ontouchmove = function (event) {
+        var soundOffEl = document.getElementById("soundoff");
+        soundOffEl.ontouchmove = function (event) {
+            event.preventDefault();
+        }
+
+        var soundOnEl = document.getElementById("soundon");
+        soundOnEl.ontouchmove = function (event) {
+            event.preventDefault();
+        }
+
+        function soundOn() {
+
+            player.unmute();
+
+        }
+
+        function soundOff() {
+
+            player.mute();
+        }
+
+        function setSoundOnEl() {
+            soundOffEl.style.display = "none";
+            soundOnEl.style.display = "block";
+        }
+
+        function setSoundOffEl() {
+            soundOffEl.style.display = "block";
+            soundOnEl.style.display = "none";
+        }
+
+        function hideSoundEl() {
+            soundOffEl.style.display = "none";
+            soundOnEl.style.display = "none";
+        }
+
+        var playerEl = document.getElementById('playerDiv');
+        // var videoEL = document.getElementById('h5live-playerDiv');
+
+        // videoEL.ontouchmove = function (event) {
         //     event.preventDefault();
         // }
 
-        // var soundOnEl = document.getElementById("soundon");
-        // soundOnEl.ontouchmove = function (event) {
-        //     event.preventDefault();
-        // }
 
-        // function soundOn() {
-        //     player.unmute();
-        // }
-
-        // function soundOff() {
-        //     player.mute();
-        // }
-
-        // function setSoundOnEl() {
-        //     soundOffEl.style.display = "none";
-        //     soundOnEl.style.display = "block";
-        // }
-
-        // function setSoundOffEl() {
-        //     soundOffEl.style.display = "block";
-        //     soundOnEl.style.display = "none";
-        // }
-
-        // function hideSoundEl() {
-        //     soundOffEl.style.display = "none";
-        //     soundOnEl.style.display = "none";
-        // }
-
-        // function retryVerifyToken() {
-        //     countRetry++;
-        //     if (countRetry <= maxRetry) {
-        //         verifyToken();
-        //     }
-        // }
-
-        // function setSizePlayer() {
-        //     playerEl.style.width = "100%";
-        //     playerEl.style.height = "100%";
-        // }
+        function setSizePlayer() {
+            playerEl.style.width = "100%";
+            playerEl.style.height = "100%";
+        }
 
 
+    </script>
 
 
-
-    </script> -->
 </body>
 
 </html>
