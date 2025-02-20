@@ -198,7 +198,7 @@
                 "onPause": function (e) {
                     //console.log(e);
 
-                    hideSoundEl();
+                   // hideSoundEl();
                     if (e.data != null && e.data != undefined && e.data.reason != null && e.data.reason != undefined && e.data.reason !== "playbacksuspended" && e.data.reason !== "interactionrequired") {
                         window.location.reload();
                     }
