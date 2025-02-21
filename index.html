@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="vi">
 
 <head>
     <title>Xoc Dia Moc Bai</title>
@@ -33,8 +33,8 @@
 
         #soundon {
             position: absolute;
-            right: 87vw;
-            top: 81vh;
+            right: 87%;
+            top: 81%;
             z-index: 4;
             width: 12vw;
             height: auto;
@@ -45,8 +45,8 @@
 
         #soundoff {
             position: absolute;
-            right: 87vw;
-            top: 81vh;
+            right: 87%;
+            top: 81%;
             z-index: 4;
             width: 12vw;
             height: auto;
@@ -54,39 +54,32 @@
             border: none;
             display: none;
         }
-
-        /* .animate-character {
-            text-transform: uppercase;
-            color: #ffffff;
-            z-index: 5;
-            text-align: right;
-            width: 100%;
-            position: absolute;
-            font-size: 2vw;
-            top: 98vh;
-            left: 49.5vw;
-            transform: translate(-50%, -50%);
-        } */
-
-
-        #h5live-playerDiv {
-            /* display: none; */
-        }
     </style>
 
 </head>
+<!-- scroll="no" style="overflow: hidden;" -->
 
 <body scroll="no" style="overflow: hidden;">
-
     <div id="playerDiv"
-        style="overflow: hidden; position: relative; background-color: black;  width: 100%; height: 100%; padding-top:56.25%"></div>
+        style="overflow: hidden; position: relative; background-color: black;  width: 100%; height: 100%; padding-bottom:56.25%">
+    </div>
     <img draggable="false" src="res/sound-off.png" id="soundoff" onclick="soundOn()" style="display: none;">
     <img draggable="false" src="res/sound-on.png" id="soundon" onclick="soundOff()" style="display: block;">
     <script src="https://demo.nanocosmos.de/nanoplayer/api/release/nanoplayer.4.min.js"></script>
     <script>
 
+        var soundOffEl = document.getElementById("soundoff");
+        soundOffEl.ontouchmove = function (event) {
+            event.preventDefault();
+        }
+
+        var soundOnEl = document.getElementById("soundon");
+        soundOnEl.ontouchmove = function (event) {
+            event.preventDefault();
+        }
+
+
         var player;
-        var events = {};
         var isPlaying = false;
         var isMute = true;
 
@@ -114,8 +107,6 @@
                 "faststart": true
             },
             "style": {
-                "width": "auto",
-                "height": "auto",
                 "displayMutedAutoplay": false,
                 "controls": false,
                 "fullScreenControl": false,
@@ -169,6 +160,7 @@
 
                 "onMute": function (e) {
                     //console.log(e);
+                    console.log('onMute :', isPlaying);
 
                     if (isPlaying) {
                         setSoundOffEl();
@@ -179,6 +171,7 @@
 
                 "onUnmute": function (e) {
                     //console.log(e);
+                    console.log('onUnmute :', isPlaying);
 
                     if (isPlaying) {
                         setSoundOnEl();
@@ -189,10 +182,15 @@
 
                 "onPause": function (e) {
                     hideSoundEl();
+                    console.log('onPause :', e);
+                    isPlaying = false;
+
                     if (e.data != null && e.data != undefined && e.data.reason != null && e.data.reason != undefined && e.data.reason !== "playbacksuspended" && e.data.reason !== "interactionrequired") {
+                        if (e.data.reason == "sourcestreamstopped") {
+                            return
+                        }
                         window.location.reload();
                     }
-                    isPlaying = false;
                 }
             }
         }
@@ -202,8 +200,6 @@
             player.setup(config).then(function (config) {
                 console.log("setup success");
                 console.log("config: " + JSON.stringify(config, undefined, 4));
-                var controlsEl = document.getElementById('controls-playerDiv');
-                // controlsEl.remove()
 
             }, function (error) {
                 alert(error.message);
@@ -220,25 +216,19 @@
         //     event.preventDefault();
         // }
 
-        var soundOffEl = document.getElementById("soundoff");
-        soundOffEl.ontouchmove = function (event) {
-            event.preventDefault();
-        }
 
-        var soundOnEl = document.getElementById("soundon");
-        soundOnEl.ontouchmove = function (event) {
-            event.preventDefault();
-        }
 
         function soundOn() {
+            console.log('soundOn');
 
             player.unmute();
-
         }
 
         function soundOff() {
+            console.log('soundOff');
 
             player.mute();
+
         }
 
         function setSoundOnEl() {
@@ -271,6 +261,8 @@
 
 
     </script>
+
+
 
 
 </body>
